@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Laravel / Backend
+/vendor
+/.env
+/storage/*.key
+/bootstrap/cache/*
