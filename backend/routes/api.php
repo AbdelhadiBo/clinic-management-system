@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InfirmierController;
 
 /*
@@ -11,7 +11,7 @@ use App\Http\Controllers\InfirmierController;
 |--------------------------------------------------------------------------
 */
 
-// Routes pour l'ADMIN
+// Routes pour l'ADMIN  
 Route::prefix('admin')->group(function () {
 
     // --- PATIENTS ---
@@ -48,6 +48,8 @@ Route::prefix('admin')->group(function () {
     // --- DASHBOARD ---
     Route::get('/dashboard', [AdminController::class, 'getDashboardStats']);
 });
+
+
 
 // --- ROUTES POUR L'INFIRMIER (RAED) ---
 Route::get('/infirmier/consultations', [InfirmierController::class, 'getConsultationsDuJour']);
