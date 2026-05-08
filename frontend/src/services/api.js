@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// URL de ton backend Laravel
 const API_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
@@ -9,7 +8,7 @@ const api = axios.create({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     },
-    withCredentials: true  // Important pour les cookies de session
+    withCredentials: true
 });
 
 // ==================== PATIENTS ====================
@@ -38,6 +37,9 @@ export const deleteInfirmier = (id) => api.delete(`/admin/infirmiers/${id}`);
 
 // ==================== RENDEZ-VOUS ====================
 export const getRendezVous = () => api.get('/admin/rendez-vous');
+export const addRendezVous = (data) => api.post('/admin/rendez-vous', data);           // ← AJOUTÉ
+export const updateRendezVous = (id, data) => api.put(`/admin/rendez-vous/${id}`, data); // ← AJOUTÉ
+export const deleteRendezVous = (id) => api.delete(`/admin/rendez-vous/${id}`);      // ← AJOUTÉ
 export const updateRendezVousStatus = (id, status) => api.put(`/admin/rendez-vous/${id}/status`, { statut: status });
 
 // ==================== FACTURES ====================
