@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Patient;
 use App\Models\Medecin;
@@ -17,7 +16,6 @@ class AdminController extends Controller
 {
     // ==================== PATIENTS ====================
 
-    // Lister tous les patients
     public function getPatients()
     {
         $patients = Patient::with('dossierMedical')->get();
@@ -27,7 +25,6 @@ class AdminController extends Controller
         ]);
     }
 
-    // Ajouter un patient
     public function addPatient(Request $request)
     {
         $request->validate([
@@ -50,7 +47,6 @@ class AdminController extends Controller
         ], 201);
     }
 
-    // Modifier un patient
     public function updatePatient(Request $request, $id)
     {
         $patient = Patient::findOrFail($id);
@@ -63,7 +59,6 @@ class AdminController extends Controller
         ]);
     }
 
-    // Supprimer un patient
     public function deletePatient($id)
     {
         Patient::findOrFail($id)->delete();
@@ -218,6 +213,36 @@ class AdminController extends Controller
         ]);
     }
 
+    public function addRendezVous(Request $request)
+    {
+        $rdv = RendezVous::create($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => 'Rendez-vous ajouté',
+            'data' => $rdv
+        ], 201);
+    }
+
+    public function updateRendezVous(Request $request, $id)
+    {
+        $rdv = RendezVous::findOrFail($id);
+        $rdv->update($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => 'Rendez-vous modifié',
+            'data' => $rdv
+        ]);
+    }
+
+    public function deleteRendezVous($id)
+    {
+        RendezVous::findOrFail($id)->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Rendez-vous supprimé'
+        ]);
+    }
+
     public function updateRendezVousStatus(Request $request, $id)
     {
         $rdv = RendezVous::findOrFail($id);
@@ -228,6 +253,37 @@ class AdminController extends Controller
             'message' => 'Statut mis à jour',
             'data' => $rdv
         ]);
+    }
+
+    // ==================== CONSULTATIONS ====================
+
+    public function getConsultations()
+    {
+        $consultations = Consultation::with(['rendezVous.patient', 'medecin', 'infirmier', 'facture'])->get();
+        return response()->json([
+            'success' => true,
+            'data' => $consultations
+        ]);
+    }
+    public function addConsultation(Request $request)
+    {
+        $request->validate([
+            'id_rdv' => 'required|integer|exists:rendez_vous,id_rdv',
+            'id_medecin' => 'required|integer|exists:medecin,id_medecin',
+            'id_infirmier' => 'nullable|integer|exists:infirmier,id_infirmier',
+            'date' => 'required|date',
+            'diagnostic' => 'nullable|string',
+            'traitement' => 'nullable|string',
+            'observations' => 'nullable|string'
+        ]);
+
+        $consultation = Consultation::create($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Consultation ajoutée avec succès',
+            'data' => $consultation
+        ], 201);
     }
 
     // ==================== FACTURES ====================
@@ -241,7 +297,47 @@ class AdminController extends Controller
         ]);
     }
 
-    // ==================== STATISTIQUES DASHBOARD ====================
+    public function addFacture(Request $request)
+    {
+        $request->validate([
+            'id_consultation' => 'required|integer|exists:consultation,id_consultation',
+            'date' => 'required|date',
+            'montant_total' => 'required|numeric|min:0',
+            'statut_paiement' => 'required|string|in:payé,non payé',
+            'mode_paiement' => 'nullable|string'
+        ]);
+
+        $facture = Facture::create($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Facture ajoutée avec succès',
+            'data' => $facture
+        ], 201);
+    }
+
+    public function updateFacture(Request $request, $id)
+    {
+        $facture = Facture::findOrFail($id);
+        $facture->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Facture mise à jour',
+            'data' => $facture
+        ]);
+    }
+
+    public function deleteFacture($id)
+    {
+        Facture::findOrFail($id)->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Facture supprimée avec succès'
+        ]);
+    }
+
+    // ==================== DASHBOARD ====================
 
     public function getDashboardStats()
     {

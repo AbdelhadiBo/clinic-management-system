@@ -4,15 +4,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InfirmierController;
+use App\Http\Controllers\AuthController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
 
-// Routes pour l'ADMIN  
-Route::prefix('admin')->group(function () {
+Route::post('/admin/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+
+    // Auth
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'user']);
 
     // --- PATIENTS ---
     Route::get('/patients', [AdminController::class, 'getPatients']);
@@ -40,15 +41,24 @@ Route::prefix('admin')->group(function () {
 
     // --- RENDEZ-VOUS ---
     Route::get('/rendez-vous', [AdminController::class, 'getRendezVous']);
+    Route::post('/rendez-vous', [AdminController::class, 'addRendezVous']);
+    Route::put('/rendez-vous/{id}', [AdminController::class, 'updateRendezVous']);
+    Route::delete('/rendez-vous/{id}', [AdminController::class, 'deleteRendezVous']);
     Route::put('/rendez-vous/{id}/status', [AdminController::class, 'updateRendezVousStatus']);
+
+    // --- CONSULTATIONS ---
+    Route::get('/consultations', [AdminController::class, 'getConsultations']);
+    Route::post('/consultations', [AdminController::class, 'addConsultation']);
 
     // --- FACTURES ---
     Route::get('/factures', [AdminController::class, 'getFactures']);
+    Route::post('/factures', [AdminController::class, 'addFacture']);
+    Route::put('/factures/{id}', [AdminController::class, 'updateFacture']);
+    Route::delete('/factures/{id}', [AdminController::class, 'deleteFacture']);
 
     // --- DASHBOARD ---
     Route::get('/dashboard', [AdminController::class, 'getDashboardStats']);
 });
-
 
 
 // --- ROUTES POUR L'INFIRMIER (RAED) ---

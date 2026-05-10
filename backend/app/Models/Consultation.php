@@ -38,11 +38,6 @@ class Consultation extends Model
         return $this->belongsTo(Infirmier::class, 'id_infirmier');
     }
 
-    public function ordonnance()
-    {
-        return $this->hasOne(Ordonnance::class, 'id_consultation');
-    }
-
     public function facture()
     {
         return $this->hasOne(Facture::class, 'id_consultation');

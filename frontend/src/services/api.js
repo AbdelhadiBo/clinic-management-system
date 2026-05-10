@@ -11,6 +11,20 @@ const api = axios.create({
     withCredentials: true
 });
 
+// Intercepteur pour ajouter le token à chaque requête
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+// ==================== AUTH ====================
+export const login = (credentials) => api.post('/admin/login', credentials);
+export const logout = () => api.post('/admin/logout');
+export const getUser = () => api.get('/admin/user');
+
 // ==================== PATIENTS ====================
 export const getPatients = () => api.get('/admin/patients');
 export const addPatient = (data) => api.post('/admin/patients', data);
@@ -37,20 +51,22 @@ export const deleteInfirmier = (id) => api.delete(`/admin/infirmiers/${id}`);
 
 // ==================== RENDEZ-VOUS ====================
 export const getRendezVous = () => api.get('/admin/rendez-vous');
-export const addRendezVous = (data) => api.post('/admin/rendez-vous', data);           // ← AJOUTÉ
-export const updateRendezVous = (id, data) => api.put(`/admin/rendez-vous/${id}`, data); // ← AJOUTÉ
-export const deleteRendezVous = (id) => api.delete(`/admin/rendez-vous/${id}`);      // ← AJOUTÉ
+export const addRendezVous = (data) => api.post('/admin/rendez-vous', data);
+export const updateRendezVous = (id, data) => api.put(`/admin/rendez-vous/${id}`, data);
+export const deleteRendezVous = (id) => api.delete(`/admin/rendez-vous/${id}`);
 export const updateRendezVousStatus = (id, status) => api.put(`/admin/rendez-vous/${id}/status`, { statut: status });
+
+// ==================== CONSULTATIONS ====================
+export const getConsultations = () => api.get('/admin/consultations');
+export const addConsultation = (data) => api.post('/admin/consultations', data);
 
 // ==================== FACTURES ====================
 export const getFactures = () => api.get('/admin/factures');
+export const addFacture = (data) => api.post('/admin/factures', data);
+export const updateFacture = (id, data) => api.put(`/admin/factures/${id}`, data);
+export const deleteFacture = (id) => api.delete(`/admin/factures/${id}`);
 
 // ==================== DASHBOARD ====================
 export const getDashboardStats = () => api.get('/admin/dashboard');
-
-// ==================== AUTHENTIFICATION ====================
-export const login = (credentials) => api.post('/admin/login', credentials);
-export const logout = () => api.post('/admin/logout');
-export const getUser = () => api.get('/admin/user');
 
 export default api;

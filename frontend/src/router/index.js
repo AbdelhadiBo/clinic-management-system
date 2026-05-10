@@ -6,6 +6,8 @@ import MedecinsView from '@/views/admin/MedecinsView.vue';
 import SecretairesView from '@/views/admin/SecretairesView.vue';
 import InfirmiersView from '@/views/admin/InfirmiersView.vue';
 import RendezVousView from '@/views/admin/RendezVousView.vue';
+import ConsultationsView from '@/views/admin/ConsultationsView.vue';
+import FacturesView from '@/views/admin/FacturesView.vue';
 
 const routes = [
   { path: '/', name: 'Accueil', component: AccueilView },
@@ -15,6 +17,8 @@ const routes = [
   { path: '/secretaires', name: 'Secretaires', component: SecretairesView },
   { path: '/infirmiers', name: 'Infirmiers', component: InfirmiersView },
   { path: '/rendez-vous', name: 'RendezVous', component: RendezVousView },
+  { path: '/consultations', name: 'Consultations', component: ConsultationsView },
+  { path: '/factures', name: 'Factures', component: FacturesView },
 ];
 
 const router = createRouter({
