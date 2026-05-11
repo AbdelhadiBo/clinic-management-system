@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import LoginView from '@/views/LoginView.vue';
 import AccueilView from '@/views/AccueilView.vue';
 import DashboardView from '@/views/admin/DashboardView.vue';
 import PatientsView from '@/views/admin/PatientsView.vue';
@@ -10,7 +11,13 @@ import ConsultationsView from '@/views/admin/ConsultationsView.vue';
 import FacturesView from '@/views/admin/FacturesView.vue';
 
 const routes = [
-  { path: '/', name: 'Accueil', component: AccueilView },
+  // Page d'accueil publique (première page)
+  { path: '/', name: 'Accueil', component: AccueilView, meta: { public: true } },
+  
+  // Login publique
+  { path: '/login', name: 'Login', component: LoginView, meta: { public: true } },
+  
+  // Pages protégées (nécessitent login)
   { path: '/dashboard', name: 'Dashboard', component: DashboardView },
   { path: '/patients', name: 'Patients', component: PatientsView },
   { path: '/medecins', name: 'Medecins', component: MedecinsView },
@@ -24,6 +31,24 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+});
+
+// Guard - Protection des routes
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token');
+  const isPublic = to.meta.public;
+  
+  // Si pas de token et page non publique → rediriger vers login
+  if (!isPublic && !token) {
+    next('/login');
+  } 
+  // Si token présent et page login → rediriger vers dashboard
+  else if (to.path === '/login' && token) {
+    next('/dashboard');
+  } 
+  else {
+    next();
+  }
 });
 
 export default router;

@@ -1,37 +1,75 @@
 <template>
   <div class="login-page">
-    <div class="login-box">
-      <div class="logo">🏥 Clinique</div>
-      <h2>Connexion Admin</h2>
-      
+    <!-- Logo -->
+    <div class="logo-header">
+      <div class="logo-icon">
+        <i class="fas fa-stethoscope"></i>
+      </div>
+      <h1 class="logo-text">MediCare</h1>
+    </div>
+    <p class="tagline">Clinic Management System</p>
+
+    <!-- Carte Login -->
+    <div class="login-card">
+      <h2 class="welcome">Welcome Back</h2>
+      <p class="subtitle">Sign in to access your dashboard</p>
+
       <form @submit.prevent="handleLogin">
+        <!-- Email -->
         <div class="form-group">
           <label>Email</label>
-          <input 
-            v-model="form.email" 
-            type="email" 
-            placeholder="admin@clinique.dz"
-            required 
-          />
+          <div class="input-wrapper">
+            <i class="fas fa-envelope input-icon"></i>
+            <input 
+              v-model="form.email" 
+              type="email" 
+              placeholder="your.email@clinic.com"
+              required 
+            />
+          </div>
         </div>
-        
+
+        <!-- Password -->
         <div class="form-group">
-          <label>Mot de passe</label>
-          <input 
-            v-model="form.password" 
-            type="password" 
-            placeholder="••••••••"
-            required 
-          />
+          <label>Password</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock input-icon"></i>
+            <input 
+              v-model="form.password" 
+              type="password" 
+              placeholder="••••••••"
+              required 
+            />
+          </div>
         </div>
-        
-        <button type="submit" class="btn-login" :disabled="loading">
-          {{ loading ? 'Connexion...' : 'Se connecter' }}
+
+        <!-- Options -->
+        <div class="options">
+          <label class="remember">
+            <input type="checkbox" v-model="rememberMe" />
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+
+        <!-- Bouton -->
+        <button type="submit" class="btn-signin" :disabled="loading">
+          {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
-        
+
+        <!-- Erreur -->
         <p v-if="error" class="error">{{ error }}</p>
       </form>
+
+      <!-- Demo Credentials -->
+      <div class="demo-box">
+        <p class="demo-title">Demo Credentials:</p>
+        <p><strong>Admin:</strong> admin@clinique.dz / password123</p>
+      </div>
     </div>
+
+    <!-- Footer -->
+    <p class="footer">© 2026 MediCare. All rights reserved.</p>
   </div>
 </template>
 
@@ -43,6 +81,7 @@ import { login } from '@/services/api.js';
 const router = useRouter();
 const loading = ref(false);
 const error = ref('');
+const rememberMe = ref(false);
 const form = ref({
   email: '',
   password: ''
@@ -56,15 +95,17 @@ const handleLogin = async () => {
     const response = await login(form.value);
     
     if (response.data.success) {
-      // Stocker le token
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
-      alert('✅ Connexion réussie !');
+      if (rememberMe.value) {
+        localStorage.setItem('remember', 'true');
+      }
+      
       router.push('/dashboard');
     }
   } catch (err) {
-    error.value = err.response?.data?.message || 'Erreur de connexion';
+    error.value = err.response?.data?.message || 'Invalid credentials';
   } finally {
     loading.value = false;
   }
@@ -75,83 +116,214 @@ const handleLogin = async () => {
 .login-page {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  justify-content: center;
+  background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+  padding: 20px;
 }
 
-.login-box {
+/* Logo */
+.logo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.logo-icon {
+  width: 44px;
+  height: 44px;
+  background: #2563eb;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon i {
+  color: white;
+  font-size: 22px;
+}
+
+.logo-text {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.tagline {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+/* Carte */
+.login-card {
   background: white;
-  padding: 50px;
-  border-radius: 20px;
-  width: 400px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06),
+              0 20px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
-.logo {
-  font-size: 48px;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-h2 {
-  text-align: center;
-  color: #2d3748;
-  margin-bottom: 30px;
+.welcome {
   font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
 }
 
+.subtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+/* Form */
 .form-group {
   margin-bottom: 20px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  color: #4a5568;
+  font-size: 14px;
   font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
 }
 
-.form-group input {
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.input-wrapper input {
   width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 16px;
-  transition: border-color 0.3s;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #f9fafb;
+  transition: all 0.2s;
 }
 
-.form-group input:focus {
+.input-wrapper input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.btn-login {
+/* Options */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.remember input {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+}
+
+.forgot {
+  font-size: 14px;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+/* Bouton */
+.btn-signin {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2563eb;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: all 0.2s;
 }
 
-.btn-login:hover:not(:disabled) {
-  transform: translateY(-2px);
+.btn-signin:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-.btn-login:disabled {
+.btn-signin:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
+/* Erreur */
 .error {
-  color: #e53e3e;
-  text-align: center;
-  margin-top: 15px;
+  color: #dc2626;
   font-size: 14px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* Demo */
+.demo-box {
+  margin-top: 24px;
+  padding: 16px;
+  background: #eff6ff;
+  border-radius: 8px;
+  border: 1px solid #dbeafe;
+}
+
+.demo-title {
+  font-weight: 600;
+  color: #1e40af;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.demo-box p {
+  font-size: 13px;
+  color: #3b82f6;
+  margin: 4px 0;
+}
+
+.demo-box strong {
+  color: #1e40af;
+}
+
+/* Footer */
+.footer {
+  margin-top: 24px;
+  font-size: 13px;
+  color: #94a3b8;
 }
 </style>
