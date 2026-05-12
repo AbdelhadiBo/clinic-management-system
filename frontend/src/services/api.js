@@ -1,14 +1,13 @@
 import axios from "axios";
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = '/api';  // ← PAS 'http://localhost:8000/api' mais juste '/api'
 
 const api = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
-    },
-    withCredentials: true
+    }
 });
 
 // Intercepteur pour ajouter le token à chaque requête

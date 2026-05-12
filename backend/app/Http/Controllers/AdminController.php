@@ -49,23 +49,51 @@ class AdminController extends Controller
 
     public function updatePatient(Request $request, $id)
     {
-        $patient = Patient::findOrFail($id);
-        $patient->update($request->all());
+        try {
+            $patient = Patient::findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Patient modifié avec succès',
-            'data' => $patient
-        ]);
+            $validated = $request->validate([
+                'nom' => 'required|string|max:100',
+                'prenom' => 'required|string|max:100',
+                'date_naissance' => 'required|date',
+                'sexe' => 'required|string|max:10',
+                'telephone' => 'required|string|max:20',
+                'email' => 'nullable|email|max:100',
+                'adresse' => 'nullable|string|max:255',
+                'groupe_sanguin' => 'nullable|string|max:5'
+            ]);
+
+            $patient->update($validated);
+
+            return response()->json([
+                'success' => true,  // ← Ajoute ça
+                'message' => 'Patient modifié avec succès',
+                'data' => $patient
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function deletePatient($id)
     {
-        Patient::findOrFail($id)->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Patient supprimé avec succès'
-        ]);
+        try {
+            $patient = Patient::findOrFail($id);
+            $patient->delete();
+
+            return response()->json([
+                'success' => true,  // ← C'est cette ligne qui manque peut-être
+                'message' => 'Patient supprimé avec succès'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     // ==================== MEDECINS ====================
