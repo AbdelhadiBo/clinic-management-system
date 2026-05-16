@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = '/api';  // ← PAS 'http://localhost:8000/api' mais juste '/api'
+const API_URL = '/api';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -13,11 +13,27 @@ const api = axios.create({
 // Intercepteur pour ajouter le token à chaque requête
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
+    
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+    
     return config;
 });
+
+// Intercepteur pour gérer les erreurs globalement
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            console.error('🚫 401 Unauthorized - Token invalide ou expiré');
+            // Optionnel : rediriger vers login
+            // localStorage.removeItem('token');
+            // window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
 
 // ==================== AUTH ====================
 export const login = (credentials) => api.post('/admin/login', credentials);

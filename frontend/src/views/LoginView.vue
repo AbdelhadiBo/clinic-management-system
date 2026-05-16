@@ -1,4 +1,4 @@
-<template>
+<<template>
   <div class="login-page">
     <!-- Logo -->
     <div class="logo-header">
@@ -61,6 +61,12 @@
         <p v-if="error" class="error">{{ error }}</p>
       </form>
 
+      <!-- Debug Info -->
+      <div v-if="debugInfo" class="debug-box">
+        <p><strong>Debug:</strong></p>
+        <pre>{{ debugInfo }}</pre>
+      </div>
+
       <!-- Demo Credentials -->
       <div class="demo-box">
         <p class="demo-title">Demo Credentials:</p>
@@ -81,6 +87,7 @@ import { login } from '@/services/api.js';
 const router = useRouter();
 const loading = ref(false);
 const error = ref('');
+const debugInfo = ref('');
 const rememberMe = ref(false);
 const form = ref({
   email: '',
@@ -90,22 +97,38 @@ const form = ref({
 const handleLogin = async () => {
   loading.value = true;
   error.value = '';
+  debugInfo.value = '';
   
   try {
+    console.log('🔑 Sending login request...', form.value);
     const response = await login(form.value);
     
-    if (response.data.success) {
+    console.log('✅ Login response:', response.data);
+    debugInfo.value = JSON.stringify(response.data, null, 2);
+    
+    if (response.data.success && response.data.token) {
+      // Sauvegarde le token
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      console.log('💾 Token saved:', response.data.token.substring(0, 20) + '...');
       
       if (rememberMe.value) {
         localStorage.setItem('remember', 'true');
       }
       
+      // Redirige
       router.push('/dashboard');
+    } else {
+      error.value = 'No token received from server';
+      console.error('❌ No token in response:', response.data);
     }
   } catch (err) {
+    console.error('❌ Login error:', err);
+    console.error('Error response:', err.response?.data);
+    
     error.value = err.response?.data?.message || 'Invalid credentials';
+    debugInfo.value = JSON.stringify(err.response?.data || err.message, null, 2);
   } finally {
     loading.value = false;
   }
@@ -292,6 +315,22 @@ const handleLogin = async () => {
   font-size: 14px;
   text-align: center;
   margin-top: 12px;
+}
+
+/* Debug */
+.debug-box {
+  margin-top: 16px;
+  padding: 12px;
+  background: #fef3c7;
+  border-radius: 8px;
+  border: 1px solid #fcd34d;
+}
+
+.debug-box pre {
+  font-size: 11px;
+  color: #92400e;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 /* Demo */

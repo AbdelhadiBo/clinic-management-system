@@ -9,7 +9,6 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // ==================== LOGIN ====================
     public function login(Request $request)
     {
         $request->validate([
@@ -20,19 +19,17 @@ class AuthController extends Controller
         $admin = Admin::where('email', $request->email)->first();
 
         if (!$admin || !Hash::check($request->password, $admin->mot_de_passe)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Email ou mot de passe incorrect'
-            ], 401);
+            throw ValidationException::withMessages([
+                'email' => ['Invalid credentials.']
+            ]);
         }
 
         // Créer un token Sanctum
-        $token = $admin->createToken('auth_token')->plainTextToken;
+        $token = $admin->createToken('admin-token')->plainTextToken;
 
         return response()->json([
             'success' => true,
-            'message' => 'Connexion réussie',
-            'token' => $token,
+            'token' => $token,  // ← IMPORTANT
             'user' => [
                 'id' => $admin->id_admin,
                 'nom' => $admin->nom,
@@ -42,18 +39,15 @@ class AuthController extends Controller
         ]);
     }
 
-    // ==================== LOGOUT ====================
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-
         return response()->json([
             'success' => true,
-            'message' => 'Déconnexion réussie'
+            'message' => 'Logged out'
         ]);
     }
 
-    // ==================== USER INFO ====================
     public function user(Request $request)
     {
         return response()->json([
