@@ -1,4 +1,4 @@
-<template>
+<<template>
   <div class="app">
     <!-- Sidebar (visible seulement si connecté) -->
     <aside v-if="isLoggedIn" class="sidebar">
@@ -36,11 +36,11 @@
           <i class="fas fa-file-invoice-dollar"></i>
           <span>Invoices</span>
         </router-link>
-        <router-link to="/" class="nav-item">
+        <router-link to="/dossiers" class="nav-item" :class="{ active: $route.path === '/dossiers' }">
           <i class="fas fa-folder-open"></i>
           <span>Medical Records</span>
         </router-link>
-        <router-link to="/" class="nav-item">
+        <router-link to="/settings" class="nav-item">
           <i class="fas fa-cog"></i>
           <span>Settings</span>
         </router-link>

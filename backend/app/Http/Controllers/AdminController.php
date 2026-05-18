@@ -66,7 +66,7 @@ class AdminController extends Controller
             $patient->update($validated);
 
             return response()->json([
-                'success' => true,  // ← Ajoute ça
+                'success' => true,
                 'message' => 'Patient modifié avec succès',
                 'data' => $patient
             ]);
@@ -85,7 +85,7 @@ class AdminController extends Controller
             $patient->delete();
 
             return response()->json([
-                'success' => true,  // ← C'est cette ligne qui manque peut-être
+                'success' => true,
                 'message' => 'Patient supprimé avec succès'
             ]);
         } catch (\Exception $e) {
@@ -293,6 +293,7 @@ class AdminController extends Controller
             'data' => $consultations
         ]);
     }
+
     public function addConsultation(Request $request)
     {
         $request->validate([
@@ -327,42 +328,84 @@ class AdminController extends Controller
 
     public function addFacture(Request $request)
     {
-        $request->validate([
-            'id_consultation' => 'required|integer|exists:consultation,id_consultation',
-            'date' => 'required|date',
-            'montant_total' => 'required|numeric|min:0',
-            'statut_paiement' => 'required|string|in:payé,non payé',
-            'mode_paiement' => 'nullable|string'
-        ]);
+        try {
+            $validated = $request->validate([
+                'id_consultation' => 'required|integer|exists:consultation,id_consultation',
+                'date' => 'required|date',
+                'montant_total' => 'required|numeric|min:0',
+                'statut_paiement' => 'required|string|in:payé,non payé',
+                'mode_paiement' => 'nullable|string'
+            ]);
 
-        $facture = Facture::create($request->all());
+            $facture = Facture::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Facture ajoutée avec succès',
-            'data' => $facture
-        ], 201);
+            return response()->json([
+                'success' => true,
+                'message' => 'Facture ajoutée avec succès',
+                'data' => $facture
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function updateFacture(Request $request, $id)
     {
-        $facture = Facture::findOrFail($id);
-        $facture->update($request->all());
+        try {
+            $facture = Facture::findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Facture mise à jour',
-            'data' => $facture
-        ]);
+            $validated = $request->validate([
+                'id_consultation' => 'sometimes|integer|exists:consultation,id_consultation',
+                'date' => 'sometimes|date',
+                'montant_total' => 'sometimes|numeric|min:0',
+                'statut_paiement' => 'sometimes|string|in:payé,non payé',
+                'mode_paiement' => 'nullable|string'
+            ]);
+
+            $facture->update($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Facture mise à jour',
+                'data' => $facture
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function deleteFacture($id)
     {
-        Facture::findOrFail($id)->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Facture supprimée avec succès'
-        ]);
+        try {
+            Facture::findOrFail($id)->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Facture supprimée avec succès'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     // ==================== DASHBOARD ====================
