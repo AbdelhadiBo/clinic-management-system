@@ -68,10 +68,7 @@
       </div>
 
       <!-- Demo Credentials -->
-      <div class="demo-box">
-        <p class="demo-title">Demo Credentials:</p>
-        <p><strong>Admin:</strong> admin@clinique.dz / password123</p>
-      </div>
+      
     </div>
 
     <!-- Footer -->
