@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -18,10 +17,12 @@ class AuthController extends Controller
 
         $admin = Admin::where('email', $request->email)->first();
 
-        if (!$admin || !Hash::check($request->password, $admin->mot_de_passe)) {
-            throw ValidationException::withMessages([
-                'email' => ['Invalid credentials.']
-            ]);
+        // 🔥 COMPARAISON EN TEXTE CLAIR (pas de Hash::check)
+        if (!$admin || $admin->mot_de_passe !== $request->password) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials'
+            ], 401);  // 401, pas d'exception qui donne 422
         }
 
         // Créer un token Sanctum
@@ -29,7 +30,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'token' => $token,  // ← IMPORTANT
+            'token' => $token,
             'user' => [
                 'id' => $admin->id_admin,
                 'nom' => $admin->nom,
