@@ -1,5 +1,6 @@
 🏥 MediCare - Clinic Management System
 A comprehensive web-based clinic management system built with Vue.js 3 (frontend) and Laravel 11 (backend). Designed for healthcare facilities to efficiently manage patients, appointments, consultations, prescriptions, and billing.
+
  Vue.js 
 
  Laravel 
@@ -7,45 +8,52 @@ A comprehensive web-based clinic management system built with Vue.js 3 (frontend
  PHP 
 
  MySQL 
-
- License 
+ 
 ✨ Features
 🔐 Authentication & Roles
+
 Admin - Full system access (doctors, secretaries, nurses, patients, reports)
 Secrétaire - Patient registration, appointment scheduling, invoice management
 Infirmier - Daily consultation management
 Secure token-based authentication (Laravel Sanctum)
-👥 Patient Management
+
+👥 Patient Management :
+
 Complete patient profiles with medical history
 Blood type tracking, allergies, and antecedents
 Quick search and filtering
 Medical Record Viewer (read-only for secretaries)
-📅 Appointment System
+📅 Appointment System :
+
 Schedule appointments with doctors
 Status tracking: En attente, Confirmé, Annulé, Terminé
 Auto-refresh dashboard with today's appointments
 Calendar integration ready
-🩺 Consultations
+
+🩺 Consultations :
 Doctor-patient consultation records
 Diagnosis, treatment, and observations
 Prescription (Ordonnance) generation
 Linked to appointments and invoices
-💊 Prescriptions
+
+💊 Prescriptions :
 Medication listings with dosage instructions
 Printable prescription format
 Linked to specific consultations
-💰 Billing & Invoices (Factures)
+
+💰 Billing & Invoices (Factures) :
 Automatic invoice generation from consultations
 Payment status tracking: Payé / Non payé
 Multiple payment methods: Cash, Card, Insurance, Cheque
 Revenue statistics and reporting
-📊 Dashboard Analytics
+
+📊 Dashboard Analytics :
 Total patients, today's appointments
 Monthly revenue overview
 Active doctors count
 Pending invoices alert
 
-🏗️ Architecture
+🏗️ Architecture:
 CLINIC-PROJECT-MAIN/
 ├── backend/                    # Laravel 11 API
 │   ├── app/
