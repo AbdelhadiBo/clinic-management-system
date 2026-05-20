@@ -15,6 +15,10 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
 
+    // Profile & Password
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::put('/password', [AuthController::class, 'changePassword']);
+
     // --- PATIENTS ---
     Route::get('/patients', [AdminController::class, 'getPatients']);
     Route::post('/patients', [AdminController::class, 'addPatient']);

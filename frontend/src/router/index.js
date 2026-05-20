@@ -10,6 +10,7 @@ import RendezVousView from '@/views/admin/RendezVousView.vue';
 import ConsultationsView from '@/views/admin/ConsultationsView.vue';
 import FacturesView from '@/views/admin/FacturesView.vue';
 import MedicalRecordsView from '@/views/admin/MedicalRecordsView.vue';
+import SettingsView from '@/views/admin/SettingsView.vue';
 
 const routes = [
   // Page d'accueil publique (première page)
@@ -28,6 +29,7 @@ const routes = [
   { path: '/consultations', name: 'Consultations', component: ConsultationsView },
   { path: '/factures', name: 'Factures', component: FacturesView },
   { path: '/dossiers', name: 'MedicalRecords', component: MedicalRecordsView },
+  { path: '/settings', name: 'Settings', component: SettingsView },
 ];
 
 const router = createRouter({

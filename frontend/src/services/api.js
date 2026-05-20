@@ -27,9 +27,6 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             console.error('🚫 401 Unauthorized - Token invalide ou expiré');
-            // Optionnel : rediriger vers login
-            // localStorage.removeItem('token');
-            // window.location.href = '/login';
         }
         return Promise.reject(error);
     }
@@ -39,6 +36,10 @@ api.interceptors.response.use(
 export const login = (credentials) => api.post('/admin/login', credentials);
 export const logout = () => api.post('/admin/logout');
 export const getUser = () => api.get('/admin/user');
+
+// ==================== PROFILE & PASSWORD ====================
+export const updateProfile = (data) => api.put('/admin/profile', data);
+export const changePassword = (data) => api.put('/admin/password', data);
 
 // ==================== PATIENTS ====================
 export const getPatients = () => api.get('/admin/patients');

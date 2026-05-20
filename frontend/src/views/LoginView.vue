@@ -1,4 +1,4 @@
-<<template>
+<template>
   <div class="login-page">
     <!-- Logo -->
     <div class="logo-header">
@@ -60,15 +60,6 @@
         <!-- Erreur -->
         <p v-if="error" class="error">{{ error }}</p>
       </form>
-
-      <!-- Debug Info -->
-      <div v-if="debugInfo" class="debug-box">
-        <p><strong>Debug:</strong></p>
-        <pre>{{ debugInfo }}</pre>
-      </div>
-
-      <!-- Demo Credentials -->
-      
     </div>
 
     <!-- Footer -->
@@ -84,7 +75,6 @@ import { login } from '@/services/api.js';
 const router = useRouter();
 const loading = ref(false);
 const error = ref('');
-const debugInfo = ref('');
 const rememberMe = ref(false);
 const form = ref({
   email: '',
@@ -94,14 +84,12 @@ const form = ref({
 const handleLogin = async () => {
   loading.value = true;
   error.value = '';
-  debugInfo.value = '';
   
   try {
     console.log('🔑 Sending login request...', form.value);
     const response = await login(form.value);
     
     console.log('✅ Login response:', response.data);
-    debugInfo.value = JSON.stringify(response.data, null, 2);
     
     if (response.data.success && response.data.token) {
       // Sauvegarde le token
@@ -124,8 +112,18 @@ const handleLogin = async () => {
     console.error('❌ Login error:', err);
     console.error('Error response:', err.response?.data);
     
-    error.value = err.response?.data?.message || 'Invalid credentials';
-    debugInfo.value = JSON.stringify(err.response?.data || err.message, null, 2);
+    const status = err.response?.status;
+    const serverMessage = err.response?.data?.message;
+    
+    if (status === 401 || serverMessage === 'Invalid credentials') {
+      error.value = 'The email address or password you entered is incorrect. Please try again.';
+    } else if (status === 500) {
+      error.value = 'An unexpected error occurred. Please try again later or contact support.';
+    } else if (status === 422) {
+      error.value = 'Please check your information and ensure all fields are filled correctly.';
+    } else {
+      error.value = 'Unable to sign in. Please verify your credentials and try again.';
+    }
   } finally {
     loading.value = false;
   }
@@ -312,48 +310,6 @@ const handleLogin = async () => {
   font-size: 14px;
   text-align: center;
   margin-top: 12px;
-}
-
-/* Debug */
-.debug-box {
-  margin-top: 16px;
-  padding: 12px;
-  background: #fef3c7;
-  border-radius: 8px;
-  border: 1px solid #fcd34d;
-}
-
-.debug-box pre {
-  font-size: 11px;
-  color: #92400e;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
-/* Demo */
-.demo-box {
-  margin-top: 24px;
-  padding: 16px;
-  background: #eff6ff;
-  border-radius: 8px;
-  border: 1px solid #dbeafe;
-}
-
-.demo-title {
-  font-weight: 600;
-  color: #1e40af;
-  font-size: 13px;
-  margin-bottom: 8px;
-}
-
-.demo-box p {
-  font-size: 13px;
-  color: #3b82f6;
-  margin: 4px 0;
-}
-
-.demo-box strong {
-  color: #1e40af;
 }
 
 /* Footer */
