@@ -12,7 +12,6 @@ const api = axios.create({
 
 // ==================== REQUEST INTERCEPTOR ====================
 api.interceptors.request.use((config) => {
-    // Support admin + secretaire tokens
     const token =
         localStorage.getItem('admin_token') ||
         localStorage.getItem('secretaire_token') ||
@@ -32,13 +31,10 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             console.error('🚫 401 Unauthorized - Token invalide ou expiré');
 
-            // Clear auth storage
             localStorage.removeItem('admin_token');
             localStorage.removeItem('admin_user');
-
             localStorage.removeItem('secretaire_token');
             localStorage.removeItem('secretaire_user');
-
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('user_role');
@@ -65,7 +61,6 @@ export const loginAdmin = (credentials) =>
 export const loginSecretaire = (credentials) =>
     api.post('/secretaire/login', credentials);
 
-// Backward compatibility
 export const login = loginAdmin;
 
 export const logout = () =>
@@ -73,11 +68,9 @@ export const logout = () =>
 
 export const getUser = () => {
     const role = getRole();
-
     if (role === 'secretaire') {
         return api.get('/secretaire/profile');
     }
-
     return api.get('/admin/user');
 };
 
@@ -104,11 +97,9 @@ export const deletePatient = (id) =>
 // ==================== MEDECINS ====================
 export const getMedecins = () => {
     const role = getRole();
-
     if (role === 'secretaire') {
         return api.get('/secretaire/medecins');
     }
-
     return api.get('/admin/medecins');
 };
 
@@ -162,29 +153,56 @@ export const deleteRendezVous = (id) =>
 
 export const updateRendezVousStatus = (id, status) => {
     const role = getRole();
-
     const endpoint =
         role === 'secretaire'
             ? `/secretaire/rendez-vous/${id}/status`
             : `/admin/rendez-vous/${id}/status`;
-
     return api.patch(endpoint, { statut: status });
 };
 
-// ==================== CONSULTATIONS ====================
-
+// ==================== CONSULTATIONS (COMPLETE) ====================
 export const getConsultations = () => {
     const role = getRole();
-
     if (role === 'secretaire') {
         return api.get('/secretaire/consultations');
     }
-
     return api.get('/admin/consultations');
 };
 
-export const addConsultation = (data) =>
-    api.post('/admin/consultations', data);
+export const getConsultation = (id) => {
+    const role = getRole();
+    if (role === 'secretaire') {
+        return api.get(`/secretaire/consultations/${id}`);
+    }
+    return api.get(`/admin/consultations/${id}`);
+};
+
+export const createConsultation = (data) => {
+    const role = getRole();
+    if (role === 'secretaire') {
+        return api.post('/secretaire/consultations', data);
+    }
+    return api.post('/admin/consultations', data);
+};
+
+// Backward compatibility alias
+export const addConsultation = createConsultation;
+
+export const updateConsultation = (id, data) => {
+    const role = getRole();
+    if (role === 'secretaire') {
+        return api.put(`/secretaire/consultations/${id}`, data);
+    }
+    return api.put(`/admin/consultations/${id}`, data);
+};
+
+export const deleteConsultation = (id) => {
+    const role = getRole();
+    if (role === 'secretaire') {
+        return api.delete(`/secretaire/consultations/${id}`);
+    }
+    return api.delete(`/admin/consultations/${id}`);
+};
 
 // ==================== FACTURES ====================
 export const getFactures = () =>

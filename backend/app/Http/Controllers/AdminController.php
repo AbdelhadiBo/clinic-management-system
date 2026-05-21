@@ -428,4 +428,20 @@ class AdminController extends Controller
             'data' => $stats
         ]);
     }
+
+
+// =========================== Consultation ================
+public function updateConsultation(Request $request, $id)
+{
+    $consultation = Consultation::findOrFail($id);
+    $consultation->update($request->all());
+    return response()->json(['message' => 'Consultation updated']);
+}
+
+public function deleteConsultation($id)
+{
+    Consultation::findOrFail($id)->delete();
+    return response()->json(['message' => 'Consultation deleted']);
+}
+
 }

@@ -91,6 +91,10 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 
     Route::get('/consultations', [AdminController::class, 'getConsultations']);
     Route::post('/consultations', [AdminController::class, 'addConsultation']);
+    Route::get('/consultations', [AdminController::class, 'getConsultations']);
+    Route::post('/consultations', [AdminController::class, 'addConsultation']);
+    Route::put('/consultations/{id}', [AdminController::class, 'updateConsultation']);      // ← ADD THIS
+    Route::delete('/consultations/{id}', [AdminController::class, 'deleteConsultation']);    // ← ADD THIS
 
     /*
     |--------------------------------------------------------------------------
@@ -144,6 +148,10 @@ Route::middleware('auth:sanctum')->prefix('secretaire')->group(function () {
 
     // 🔥 ADD THIS: Consultations
     Route::get('/consultations', [SecretaireController::class, 'getConsultations']);
+        Route::get('/consultations', [SecretaireController::class, 'getConsultations']);
+    Route::post('/consultations', [SecretaireController::class, 'addConsultation']);       // ← ADD THIS (if needed)
+    Route::put('/consultations/{id}', [SecretaireController::class, 'updateConsultation']);  // ← ADD THIS
+    Route::delete('/consultations/{id}', [SecretaireController::class, 'deleteConsultation']);
 
     // Factures
     Route::get('/factures', [SecretaireController::class, 'getFactures']);
