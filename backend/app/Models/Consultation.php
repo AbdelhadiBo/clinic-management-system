@@ -43,8 +43,9 @@ class Consultation extends Model
         return $this->hasOne(Facture::class, 'id_consultation');
     }
     public function ordonnance()
-{
-    return $this->hasOne(Ordonnance::class, 'id_consultation');
-}
+    {
+        return $this->hasOne(Ordonnance::class, 'id_consultation');
+    }
+
 
 }

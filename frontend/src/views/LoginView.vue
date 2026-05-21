@@ -1,4 +1,4 @@
-<<template>
+<template>
   <div class="login-page">
     <!-- Logo -->
     <div class="logo-header">
@@ -14,7 +14,7 @@
       <h2 class="welcome">Welcome Back</h2>
       <p class="subtitle">Sign in to access your dashboard</p>
 
-      <!-- Role Selector (NEW - styled to match your design) -->
+      <!-- Role Selector -->
       <div class="role-selector">
         <button 
           :class="['role-btn', { active: role === 'admin' }]" 
@@ -96,7 +96,7 @@ const router = useRouter();
 const loading = ref(false);
 const error = ref('');
 const rememberMe = ref(false);
-const role = ref('admin'); // 'admin' or 'secretaire'
+const role = ref('admin');
 
 const form = ref({
   email: '',
@@ -110,7 +110,6 @@ const handleLogin = async () => {
   try {
     console.log('🔑 Sending login request...', { ...form.value, role: role.value });
     
-    // Choose endpoint based on role
     const endpoint = role.value === 'admin' ? '/admin/login' : '/secretaire/login';
     const response = await api.post(endpoint, {
       email: form.value.email,
@@ -120,7 +119,6 @@ const handleLogin = async () => {
     console.log('✅ Login response:', response.data);
     
     if (response.data.success && response.data.token) {
-      // Save token with role prefix
       const tokenKey = role.value === 'admin' ? 'admin_token' : 'secretaire_token';
       const userKey = role.value === 'admin' ? 'admin_user' : 'secretaire_user';
       
@@ -128,14 +126,12 @@ const handleLogin = async () => {
       localStorage.setItem(userKey, JSON.stringify(response.data.user));
       localStorage.setItem('user_role', role.value);
       
-      // Set auth header
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       
       if (rememberMe.value) {
         localStorage.setItem('remember', 'true');
       }
       
-      // Redirect based on role
       if (role.value === 'admin') {
         router.push('/dashboard');
       } else {
@@ -168,8 +164,6 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-/* ==================== YOUR ORIGINAL STYLES (UNCHANGED) ==================== */
-
 .login-page {
   min-height: 100vh;
   display: flex;
@@ -358,8 +352,7 @@ const handleLogin = async () => {
   color: #94a3b8;
 }
 
-/* ==================== NEW ROLE SELECTOR STYLES ==================== */
-
+/* Role Selector */
 .role-selector {
   display: flex;
   gap: 8px;

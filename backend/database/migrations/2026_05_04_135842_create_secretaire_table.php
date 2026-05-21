@@ -9,12 +9,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('secretaire', function (Blueprint $table) {
+
             $table->id('id_secretaire');
+
             $table->string('nom', 100);
+
             $table->string('prenom', 100);
-            $table->string('email', 100)->unique();
+
             $table->string('telephone', 20)->nullable();
+
+            $table->string('email', 100)->unique()->nullable();
+
             $table->string('mot_de_passe', 255);
+
             $table->timestamps();
         });
     }
