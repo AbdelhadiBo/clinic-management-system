@@ -1,0 +1,24 @@
+/* Reset everything */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Force full height on all containers */
+html, body, #app {
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure Vue app fills container */
+#app {
+  display: flex;
+  flex-direction: column;
+}

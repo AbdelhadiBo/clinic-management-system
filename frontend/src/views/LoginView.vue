@@ -14,6 +14,26 @@
       <h2 class="welcome">Welcome Back</h2>
       <p class="subtitle">Sign in to access your dashboard</p>
 
+      <!-- Role Selector -->
+      <div class="role-selector">
+        <button 
+          :class="['role-btn', { active: role === 'admin' }]" 
+          @click="role = 'admin'"
+          type="button"
+        >
+          <i class="fas fa-user-shield"></i>
+          Admin
+        </button>
+        <button 
+          :class="['role-btn', { active: role === 'secretaire' }]" 
+          @click="role = 'secretaire'"
+          type="button"
+        >
+          <i class="fas fa-user-nurse"></i>
+          Secrétaire
+        </button>
+      </div>
+
       <form @submit.prevent="handleLogin">
         <!-- Email -->
         <div class="form-group">
@@ -23,7 +43,7 @@
             <input 
               v-model="form.email" 
               type="email" 
-              placeholder="your.email@clinic.com"
+              :placeholder="role === 'admin' ? 'admin@clinique.com' : 'secretaire@clinique.com'"
               required 
             />
           </div>
@@ -54,7 +74,7 @@
 
         <!-- Bouton -->
         <button type="submit" class="btn-signin" :disabled="loading">
-          {{ loading ? 'Signing in...' : 'Sign In' }}
+          {{ loading ? 'Signing in...' : 'Sign In as ' + (role === 'admin' ? 'Admin' : 'Secrétaire') }}
         </button>
 
         <!-- Erreur -->
@@ -70,12 +90,14 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login } from '@/services/api.js';
+import api from '@/services/api.js';
 
 const router = useRouter();
 const loading = ref(false);
 const error = ref('');
 const rememberMe = ref(false);
+const role = ref('admin');
+
 const form = ref({
   email: '',
   password: ''
@@ -86,24 +108,35 @@ const handleLogin = async () => {
   error.value = '';
   
   try {
-    console.log('🔑 Sending login request...', form.value);
-    const response = await login(form.value);
+    console.log('🔑 Sending login request...', { ...form.value, role: role.value });
+    
+    const endpoint = role.value === 'admin' ? '/admin/login' : '/secretaire/login';
+    const response = await api.post(endpoint, {
+      email: form.value.email,
+      password: form.value.password
+    });
     
     console.log('✅ Login response:', response.data);
     
     if (response.data.success && response.data.token) {
-      // Sauvegarde le token
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const tokenKey = role.value === 'admin' ? 'admin_token' : 'secretaire_token';
+      const userKey = role.value === 'admin' ? 'admin_user' : 'secretaire_user';
       
-      console.log('💾 Token saved:', response.data.token.substring(0, 20) + '...');
+      localStorage.setItem(tokenKey, response.data.token);
+      localStorage.setItem(userKey, JSON.stringify(response.data.user));
+      localStorage.setItem('user_role', role.value);
+      
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       
       if (rememberMe.value) {
         localStorage.setItem('remember', 'true');
       }
       
-      // Redirige
-      router.push('/dashboard');
+      if (role.value === 'admin') {
+        router.push('/dashboard');
+      } else {
+        router.push('/secretaire/dashboard');
+      }
     } else {
       error.value = 'No token received from server';
       console.error('❌ No token in response:', response.data);
@@ -317,5 +350,44 @@ const handleLogin = async () => {
   margin-top: 24px;
   font-size: 13px;
   color: #94a3b8;
+}
+
+/* Role Selector */
+.role-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.role-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.role-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.role-btn.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.role-btn i {
+  font-size: 16px;
 }
 </style>
