@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
 import LoginView from '@/views/LoginView.vue';
 import AccueilView from '@/views/AccueilView.vue';
 
@@ -22,20 +21,21 @@ import SecretaireAppointments from '@/views/secretaire/AppointmentsView.vue';
 import SecretaireInvoices from '@/views/secretaire/InvoicesView.vue';
 import SecretaireDoctors from '@/views/secretaire/DoctorsView.vue';
 
+// --- TON IMPORT PATIENT (AMINE) ---
+import DashboardPatient from '@/views/patient/Patient.vue';
+
 const routes = [
   /*
   |--------------------------------------------------------------------------
   | Public Routes
   |--------------------------------------------------------------------------
   */
-
   {
     path: '/',
     name: 'Accueil',
     component: AccueilView,
     meta: { public: true }
   },
-
   {
     path: '/login',
     name: 'Login',
@@ -48,70 +48,60 @@ const routes = [
   | ADMIN ROUTES
   |--------------------------------------------------------------------------
   */
-
   {
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/patients',
     name: 'Patients',
     component: PatientsView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/medecins',
     name: 'Medecins',
     component: MedecinsView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/secretaires',
     name: 'Secretaires',
     component: SecretairesView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/infirmiers',
     name: 'Infirmiers',
     component: InfirmiersView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/rendez-vous',
     name: 'RendezVous',
     component: RendezVousView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/consultations',
     name: 'Consultations',
     component: ConsultationsView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/factures',
     name: 'Factures',
     component: FacturesView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/dossiers',
     name: 'MedicalRecords',
     component: MedicalRecordsView,
     meta: { requiresAuth: true, role: 'admin' }
   },
-
   {
     path: '/settings',
     name: 'Settings',
@@ -124,47 +114,54 @@ const routes = [
   | SECRETAIRE ROUTES
   |--------------------------------------------------------------------------
   */
-
   {
     path: '/secretaire/dashboard',
     name: 'SecretaireDashboard',
     component: SecretaireDashboard,
     meta: { requiresAuth: true, role: 'secretaire' }
   },
-
   {
     path: '/secretaire/patients',
     name: 'SecretairePatients',
     component: SecretairePatients,
     meta: { requiresAuth: true, role: 'secretaire' }
   },
-
   {
     path: '/secretaire/appointments',
     name: 'SecretaireAppointments',
     component: SecretaireAppointments,
     meta: { requiresAuth: true, role: 'secretaire' }
   },
-
   {
     path: '/secretaire/invoices',
     name: 'SecretaireInvoices',
     component: SecretaireInvoices,
     meta: { requiresAuth: true, role: 'secretaire' }
   },
-
   {
     path: '/secretaire/consultations',
     name: 'SecretaireConsultations',
     component: () => import('@/views/secretaire/ConsultationsView.vue'),
     meta: { requiresAuth: true, role: 'secretaire' }
   },
-
   {
     path: '/secretaire/doctors',
     name: 'SecretaireDoctors',
     component: SecretaireDoctors,
     meta: { requiresAuth: true, role: 'secretaire' }
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | TON ESPACE PATIENT (AMINE) - En accès public temporaire pour tester !
+  |--------------------------------------------------------------------------
+  */
+  {
+    path: '/mon-espace-patient',
+    name: 'EspacePatient',
+    component: DashboardPatient,
+    //meta: { public: true } // Laisse passer Amine directement !
+    meta: { requiresAuth: true, role: 'patient' }
   }
 ];
 
@@ -178,22 +175,18 @@ const router = createRouter({
 | ROUTE GUARD
 |--------------------------------------------------------------------------
 */
-
 router.beforeEach((to, from, next) => {
-
   const isPublic = to.meta.public;
 
-  // Public route
+  // Route publique (L'accueil, le login, et TA page de test !)
   if (isPublic) {
     next();
     return;
   }
 
-  // Protected route
+  // Route protégée
   if (to.meta.requiresAuth) {
-
     const requiredRole = to.meta.role;
-
     const token =
       localStorage.getItem(`${requiredRole}_token`) ||
       localStorage.getItem('token');
@@ -205,40 +198,33 @@ router.beforeEach((to, from, next) => {
 
     const userRole = localStorage.getItem('user_role');
 
-    // Wrong role
+    // Mauvais rôle
     if (requiredRole && userRole && userRole !== requiredRole) {
-
       if (userRole === 'admin') {
         next('/dashboard');
         return;
       }
-
       if (userRole === 'secretaire') {
         next('/secretaire/dashboard');
         return;
       }
-
       next('/login');
       return;
     }
   }
 
-  // Redirect logged user away from login
+  // Redirection si l'utilisateur est déjà connecté
   if (to.path === '/login') {
-
     const adminToken = localStorage.getItem('admin_token');
     const secretaireToken = localStorage.getItem('secretaire_token');
     const token = localStorage.getItem('token');
-
     const role = localStorage.getItem('user_role');
 
     if (adminToken || token) {
-
       if (role === 'admin') {
         next('/dashboard');
         return;
       }
-
       if (role === 'secretaire') {
         next('/secretaire/dashboard');
         return;

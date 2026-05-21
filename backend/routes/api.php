@@ -174,3 +174,10 @@ Route::middleware('auth:sanctum')->prefix('secretaire')->group(function () {
 */
 
 Route::get('/infirmier/consultations', [InfirmierController::class, 'getConsultationsDuJour']);
+
+
+use App\Http\Controllers\PatientController;
+
+Route::get('/patient/{id}/consultations', [PatientController::class, 'getMesConsultations']);
+Route::get('/patient/{id}/factures', [PatientController::class, 'getMesFactures']);
+Route::post('/patient/prendre-rdv', [PatientController::class, 'prendreRDV']);

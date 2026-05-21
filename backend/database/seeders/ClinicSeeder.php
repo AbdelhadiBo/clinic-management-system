@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash; 
 use Carbon\Carbon; 
 
 class ClinicSeeder extends Seeder
@@ -28,16 +29,32 @@ class ClinicSeeder extends Seeder
             ['nom' => 'Tazi', 'prenom' => 'Amine', 'telephone' => '0677889900', 'service' => 'Pédiatrie'],
         ]);
 
-        // 4. Ajouter des Patients
+        // 4. Ajouter des Patients (Avec les nouveaux mots de passe !)
         $patient1 = DB::table('patient')->insertGetId([
-            'nom' => 'Dupont', 'prenom' => 'Jean', 'date_naissance' => '1985-05-12', 'sexe' => 'Homme', 'adresse' => 'Rabat', 'telephone' => '0601020304', 'email' => 'jean.dupont@email.com', 'groupe_sanguin' => 'O+'
+            'nom' => 'Dupont', 
+            'prenom' => 'Jean', 
+            'date_naissance' => '1985-05-12', 
+            'sexe' => 'Homme', 
+            'adresse' => 'Rabat', 
+            'telephone' => '0601020304', 
+            'email' => 'jean.dupont@email.com', 
+            'groupe_sanguin' => 'O+',
+            'mot_de_passe' => Hash::make('password') // <-- AJOUTÉ ICI !
         ]);
 
         $patient2 = DB::table('patient')->insertGetId([
-            'nom' => 'Chraibi', 'prenom' => 'Meryem', 'date_naissance' => '1992-11-23', 'sexe' => 'Femme', 'adresse' => 'Casablanca', 'telephone' => '0612345678', 'email' => 'meryem.c@email.com', 'groupe_sanguin' => 'A+'
+            'nom' => 'Chraibi', 
+            'prenom' => 'Meryem', 
+            'date_naissance' => '1992-11-23', 
+            'sexe' => 'Femme', 
+            'adresse' => 'Casablanca', 
+            'telephone' => '0612345678', 
+            'email' => 'meryem.c@email.com', 
+            'groupe_sanguin' => 'A+',
+            'mot_de_passe' => Hash::make('password') // <-- AJOUTÉ ICI !
         ]);
 
-        // 5. Ajouter des Rendez-vous POUR AUJOURD'HUI (Pour que ton module Infirmier marche !)
+        // 5. Ajouter des Rendez-vous POUR AUJOURD'HUI
         DB::table('rendez_vous')->insert([
             [
                 'id_patient' => $patient1, 'id_medecin' => 1, 'id_secretaire' => 1, 
