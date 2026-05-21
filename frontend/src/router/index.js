@@ -160,7 +160,8 @@ const routes = [
     path: '/mon-espace-patient',
     name: 'EspacePatient',
     component: DashboardPatient,
-    meta: { public: true } // Laisse passer Amine directement !
+    //meta: { public: true } // Laisse passer Amine directement !
+    meta: { requiresAuth: true, role: 'patient' }
   }
 ];
 
