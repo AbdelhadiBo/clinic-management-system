@@ -126,6 +126,8 @@ const menuItems = computed(() => {
       { path: '/secretaire/appointments', label: 'Appointments', icon: 'fas fa-calendar-check' },
       { path: '/secretaire/consultations', label: 'Consultations', icon: 'fas fa-stethoscope' },
       { path: '/secretaire/invoices', label: 'Invoices', icon: 'fas fa-file-invoice-dollar' },
+      { path: '/secretaire/doctors', label: 'Doctors', icon: 'fas fa-user-md' },
+
     
     ];
   }

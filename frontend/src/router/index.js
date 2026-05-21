@@ -19,6 +19,7 @@ import SecretaireDashboard from '@/views/secretaire/DashboardView.vue';
 import SecretairePatients from '@/views/secretaire/PatientsView.vue';
 import SecretaireAppointments from '@/views/secretaire/AppointmentsView.vue';
 import SecretaireInvoices from '@/views/secretaire/InvoicesView.vue';
+import SecretaireDoctors from '@/views/secretaire/DoctorsView.vue';
 // router/index.js
 const routes = [
   // Public pages
@@ -41,6 +42,8 @@ const routes = [
   { path: '/secretaire/appointments', name: 'SecretaireAppointments', component: SecretaireAppointments, meta: { requiresAuth: true, role: 'secretaire' } },
   { path: '/secretaire/invoices', name: 'SecretaireInvoices', component: SecretaireInvoices, meta: { requiresAuth: true, role: 'secretaire' } },
   { path: '/secretaire/consultations', name: 'SecretaireConsultations', component: () => import('@/views/secretaire/ConsultationsView.vue'), meta: { requiresAuth: true, role: 'secretaire' } },
+  { path: '/secretaire/doctors', name: 'SecretaireDoctors', component: SecretaireDoctors, meta: { requiresAuth: true, role: 'secretaire' } }
+
 ];
 
 const router = createRouter({

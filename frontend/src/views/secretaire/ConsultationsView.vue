@@ -167,9 +167,20 @@
         <div class="modal-body details-body" v-if="selectedConsult">
           <div class="detail-section">
             <h4><i class="fas fa-user"></i> Patient</h4>
-            <p>{{ selectedConsult.rendezVous?.patient?.prenom }} {{ selectedConsult.rendezVous?.patient?.nom }}</p>
-            <p class="text-muted">{{ selectedConsult.rendezVous?.patient?.telephone }}</p>
+
+            <p>{{ selectedConsult.rendez_vous?.patient?.prenom }} {{ selectedConsult.rendez_vous?.patient?.nom }}</p>
           </div>
+
+          <div class="detail-section">
+            <h4><i class="fas fa-phone"></i> Telephone</h4>
+            <p >{{ selectedConsult.rendez_vous?.patient?.telephone }}</p>
+          </div>
+
+
+
+
+
+
           
           <div class="detail-section">
             <h4><i class="fas fa-user-md"></i> Doctor</h4>
@@ -183,7 +194,7 @@
           </div>
 
           <div class="detail-section">
-            <h4><i class="fas fa-stethoscope"></i> Diagnosis</h4>
+            <h4><i class="fas fa-stethoscope"></i> Diagnostics</h4>
             <p>{{ selectedConsult.diagnostic }}</p>
           </div>
 
@@ -209,6 +220,7 @@
             <h4><i class="fas fa-file-invoice-dollar"></i> Invoice</h4>
             <div class="invoice-box">
               <p><strong>Amount:</strong> {{ selectedConsult.facture.montant_total }} DH</p>
+
               <p><strong>Status:</strong> 
                 <span :class="selectedConsult.facture.statut_paiement === 'payé' ? 'text-success' : 'text-warning'">
                   {{ selectedConsult.facture.statut_paiement }}
