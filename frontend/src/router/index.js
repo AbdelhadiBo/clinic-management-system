@@ -5,7 +5,7 @@ import DashboardView from '@/views/admin/DashboardView.vue';
 import PatientsView from '@/views/admin/PatientsView.vue';
 import MedecinsView from '@/views/admin/MedecinsView.vue';
 import SecretairesView from '@/views/admin/SecretairesView.vue';
-import InfirmiersView from '@/views/admin/InfirmiersView.vue';
+import InfirmiersView from '@/views/infirmier/InfirmiersView.vue';
 import RendezVousView from '@/views/admin/RendezVousView.vue';
 import ConsultationsView from '@/views/admin/ConsultationsView.vue';
 import FacturesView from '@/views/admin/FacturesView.vue';
