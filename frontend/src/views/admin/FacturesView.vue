@@ -17,7 +17,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Total Revenue</span>
-          <span class="stat-value">${{ formatNumber(montantTotal) }}</span>
+          <span class="stat-value">MAD{{ formatNumber(montantTotal) }}</span>
         </div>
         <div class="stat-icon blue">
           <i class="fas fa-dollar-sign"></i>
@@ -27,7 +27,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Paid</span>
-          <span class="stat-value green">${{ formatNumber(montantPaye) }}</span>
+          <span class="stat-value green">MAD{{ formatNumber(montantPaye) }}</span>
         </div>
         <div class="stat-icon green">
           <i class="fas fa-check-circle"></i>
@@ -37,7 +37,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Pending</span>
-          <span class="stat-value orange">${{ formatNumber(montantPending) }}</span>
+          <span class="stat-value orange">MAD{{ formatNumber(montantPending) }}</span>
         </div>
         <div class="stat-icon orange">
           <i class="fas fa-clock"></i>
@@ -47,7 +47,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Overdue</span>
-          <span class="stat-value red">${{ formatNumber(montantOverdue) }}</span>
+          <span class="stat-value red">MAD{{ formatNumber(montantOverdue) }}</span>
         </div>
         <div class="stat-icon red">
           <i class="fas fa-file-invoice-dollar"></i>
@@ -87,7 +87,7 @@
               </div>
             </td>
             <td>{{ formatDate(facture.date) }}</td>
-            <td class="amount">${{ facture.montant_total }}</td>
+            <td class="amount">MAD{{ facture.montant_total }}</td>
             <td>
               <span :class="['status-badge', getStatusClass(facture.statut_paiement)]">
                 {{ getStatusLabel(facture.statut_paiement) }}
@@ -192,7 +192,7 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Amount:</span>
-            <span class="detail-value amount">${{ selectedFacture.montant_total }}</span>
+            <span class="detail-value amount">MAD{{ selectedFacture.montant_total }}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Status:</span>

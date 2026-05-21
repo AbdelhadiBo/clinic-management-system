@@ -39,7 +39,7 @@
             <i class="fas fa-dollar-sign"></i>
           </div>
         </div>
-        <p class="stat-value">{{ montantTotal }} DA</p>
+        <p class="stat-value">{{ montantTotal }} MAD</p>
         <p class="stat-change positive">↑ 15% from last month</p>
       </div>
 
